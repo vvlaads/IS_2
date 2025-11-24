@@ -1,3 +1,34 @@
 {
-
+  "type": "movie",
+  "name": "Battle for the Last Light",
+  "coordinates": {
+    "type": "coordinates",
+    "x": -3,
+    "y": -1
+  },
+  "oscarsCount": 5,
+  "budget": 120000000,
+  "totalBoxOffice": 480000000.0,
+  "mpaaRating": "PG_13",
+  "director": null,
+  "screenwriter": {
+    "type": "person",
+    "name": "Rin Mori",
+    "eyeColor": "BLACK",
+    "hairColor": "BROWN",
+    "location": {
+      "type": "location",
+      "x": -3.0,
+      "y": -1.0,
+      "z": 99
+    },
+    "birthday": null,
+    "weight": 68,
+    "passportID": "bss-134899"
+  },
+  "operator": null,
+  "length": 160,
+  "goldenPalmCount": 2,
+  "usaBoxOffice": 300000000.0,
+  "genre": "ADVENTURE"
 }
