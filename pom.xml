@@ -2,10 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.example</groupId>
-    <artifactId>IS_1</artifactId>
+    <artifactId>IS_2</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>IS_1</name>
+    <name>IS_2</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
@@ -22,13 +22,13 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>13.0.0</version> <!-- актуальная версия -->
+            <version>13.0.0</version>
         </dependency>
 
     </dependencies>
 
     <build>
-        <finalName>IS_1</finalName>
+        <finalName>IS_2</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

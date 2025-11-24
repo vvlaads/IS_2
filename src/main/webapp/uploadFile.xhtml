@@ -31,11 +31,13 @@
             <div class="button-wrapper">
                 <p:commandButton value="Загрузить"
                                  action="#{fileUploadBean.upload()}"
-                                 styleClass="upload-button"/>
+                                 styleClass="upload-button"
+                                 update="messages"/>
             </div>
 
-            <p:growl id="messages"/>
         </h:form>
+
+        <p:growl id="messages" showDetail="true"/>
     </div>
 </h:body>
 </html>
