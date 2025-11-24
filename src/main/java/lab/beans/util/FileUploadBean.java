@@ -1,7 +1,9 @@
 package lab.beans.util;
 
+import lab.database.DatabaseManager;
 import org.primefaces.model.file.UploadedFile;
 
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -10,33 +12,43 @@ import javax.faces.context.FacesContext;
 @ManagedBean(name = "fileUploadBean")
 @RequestScoped
 public class FileUploadBean {
+    @EJB
+    private DatabaseManager databaseManager;
+
     private UploadedFile file;
 
     public void upload() {
-        if (file == null) {
-            addError("Не выбран файл");
-            return;
-        }
-
         try {
+            if (file == null) {
+                showError("Не выбран файл");
+                return;
+            }
+
             byte[] fileContent = file.getContent();
             String fileName = file.getFileName();
 
-            if (fileName.endsWith(".json")) {
-                System.out.println("JSON get + hello hello hello\n\n\n");
-                addMessage("Готово", "Получилось");
+            if (fileName == null || !fileName.toLowerCase().endsWith(".json")) {
+                showError("Неверный тип файла");
+                return;
+            }
+
+            boolean result = databaseManager.importObjects(fileContent);
+            if (result) {
+                showMessage("Успешно выполнено", "Все объекты были добавлены");
+            } else {
+                showError("Ошибка при добавлении объектов");
             }
         } catch (Exception e) {
-            addError("Ошибка при загрузке файла: " + e.getMessage());
+            showError("Внутренняя ошибка: " + e.getMessage());
         }
     }
 
-    private void addMessage(String summary, String detail) {
+    private void showMessage(String summary, String detail) {
         FacesContext.getCurrentInstance()
                 .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail));
     }
 
-    private void addError(String detail) {
+    private void showError(String detail) {
         FacesContext.getCurrentInstance()
                 .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", detail));
     }

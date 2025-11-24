@@ -41,7 +41,10 @@ public class Validator {
                     Min minAnnotation = field.getAnnotation(Min.class);
                     double minValue = minAnnotation.value();
 
-                    if ((Double) value < minValue) {
+                    if (!(value instanceof Number)) return false;
+                    double numericValue = ((Number) value).doubleValue();
+
+                    if (numericValue < minValue) {
                         return false;
                     }
                 }
@@ -52,7 +55,10 @@ public class Validator {
                     MoreThan moreThanAnnotation = field.getAnnotation(MoreThan.class);
                     double minValue = moreThanAnnotation.value();
 
-                    if ((Double) value <= minValue) {
+                    if (!(value instanceof Number)) return false;
+                    double numericValue = ((Number) value).doubleValue();
+
+                    if (numericValue <= minValue) {
                         return false;
                     }
                 }

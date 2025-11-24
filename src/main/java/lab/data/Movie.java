@@ -14,47 +14,61 @@ public class Movie implements DBObject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
+
     @Column(nullable = false)
     @NotNull
     @NotEmpty
     private String name; //Поле не может быть null, Строка не может быть пустой
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "coordinates_id", nullable = false)
     @NotNull
     private Coordinates coordinates; //Поле не может быть null
+
     @Column(name = "CREATION_DATE", nullable = false)
     private java.time.LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
+
     @Column(name = "OSCARS_COUNT", nullable = false)
     @Min(0)
     @NotNull
     private Long oscarsCount; //Значение поля должно быть больше 0, Поле не может быть null
+
     @Column
     @MoreThan(0)
     private Integer budget; //Значение поля должно быть больше 0, Поле может быть null
+
     @Column(name = "TOTAL_BOX_OFFICE")
     @MoreThan(0)
     private float totalBoxOffice; //Значение поля должно быть больше 0
+
     @Column(name = "MPAA_RATING")
     @Enumerated(EnumType.STRING)
     private MpaaRating mpaaRating; //Поле может быть null
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "director_id")
     private Person director; //Поле может быть null
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "screenwriter_id")
     private Person screenwriter;
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "operator_id")
     private Person operator; //Поле может быть null
+
     @Column(nullable = false)
     @MoreThan(0)
     private Integer length; //Поле не может быть null, Значение поля должно быть больше 0
+
     @Column(name = "GOLDEN_PALM_COUNT")
     @Min(0)
     private int goldenPalmCount; //Значение поля должно быть больше 0
+
     @Column(name = "USA_BOX_OFFICE")
     @MoreThan(0)
     private double usaBoxOffice; //Значение поля должно быть больше 0
+
     @Column
     @Enumerated(EnumType.STRING)
     private MovieGenre genre; //Поле может быть null

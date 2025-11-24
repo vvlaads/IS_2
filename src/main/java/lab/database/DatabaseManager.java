@@ -1,6 +1,10 @@
 package lab.database;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lab.data.Coordinates;
 import lab.data.Location;
 import lab.data.Movie;
@@ -12,6 +16,8 @@ import javax.ejb.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
+import javax.validation.ValidationException;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -236,4 +242,40 @@ public class DatabaseManager {
                 .getResultList();
     }
 
+    public boolean importObjects(byte[] fileContent) {
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        try {
+            ObjectMapper mapper = new ObjectMapper()
+                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            List<DBObject> objects;
+            JsonNode root = mapper.readTree(fileContent);
+            if (root.isArray()) {
+                objects = mapper.readValue(fileContent, new TypeReference<List<DBObject>>() {
+                });
+            } else if (root.isObject()) {
+                DBObject obj = mapper.treeToValue(root, DBObject.class);
+                objects = Collections.singletonList(obj);
+            } else {
+                throw new IOException("Unsupported JSON root type: " + root.getNodeType());
+            }
+
+            for (DBObject obj : objects) {
+                if (!Validator.validateObject(obj)) {
+                    throw new ValidationException("Ошибка валидации");
+                }
+            }
+
+            for (DBObject obj : objects) {
+                em.persist(obj);
+            }
+
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            System.err.println("Ошибка добавления: " + e.getMessage());
+            transaction.rollback();
+            return false;
+        }
+    }
 }
