@@ -1,0 +1,37 @@
+.upload-container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 40px 30px;
+    background-color: #ffffff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 14px;
+    text-align: center;
+}
+
+.upload-container h2 {
+    color: #2c3e50;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #6c757d;
+    margin-bottom: 25px;
+}
+
+.upload-form {
+    margin-top: 20px;
+}
+
+.button-wrapper {
+    margin-top: 30px;
+}
+
+.upload-button {
+    font-weight: 700;
+}
+
+.upload-form .ui-button {
+    padding: 5px !important;
+    font-weight: 600 !important;
+}

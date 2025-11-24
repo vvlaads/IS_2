@@ -27,6 +27,10 @@
                         outcome="/specFuncs"
                         styleClass="#{navigationBean.currentPage eq 'specFuncs' ? 'active-menu' : ''}"
                         ajax="false"/>
+            <p:menuitem value="Загрузить" icon="pi pi-upload"
+                        outcome="/uploadFile"
+                        styleClass="#{navigationBean.currentPage eq 'uploadFile' ? 'active-menu' : ''}"
+                        ajax="false"/>
         </p:menubar>
     </h:form>
 </ui:composition>

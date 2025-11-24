@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Загрузить объекты</title>
+    <h:outputStylesheet name="styles.css"/>
+    <h:outputStylesheet name="uploadFile.css"/>
+</h:head>
+
+<h:body>
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{navigationBean.markPage('uploadFile')}"/>
+    </f:metadata>
+
+    <ui:include src="/templates/topMenu.xhtml"/>
+
+    <div class="upload-container">
+        <h2>Загрузить файл</h2>
+        <p class="subtitle">Выберите файл для загрузки</p>
+
+        <h:form styleClass="upload-form" enctype="multipart/form-data">
+            <p:fileUpload value="#{fileUploadBean.file}"
+                          mode="simple"
+                          skinSimple="true"
+                          label="Выбрать файл"/>
+
+            <div class="button-wrapper">
+                <p:commandButton value="Загрузить"
+                                 action="#{fileUploadBean.upload()}"
+                                 styleClass="upload-button"/>
+            </div>
+
+            <p:growl id="messages"/>
+        </h:form>
+    </div>
+</h:body>
+</html>
