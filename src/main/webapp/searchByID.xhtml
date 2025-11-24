@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Поиск по ID</title>
+    <h:outputStylesheet name="styles.css"/>
+    <h:outputStylesheet name="findByClass.css"/>
+</h:head>
+
+<h:body>
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{navigationBean.markPage('searchByID')}"/>
+    </f:metadata>
+
+    <ui:include src="/templates/topMenu.xhtml"/>
+
+    <div class="find-container">
+        <h2>Поиск объекта по ID</h2>
+        <p class="subtitle">Выберите тип объекта и введите его идентификатор</p>
+
+        <h:form styleClass="find-form">
+            <h:panelGrid columns="2" columnClasses="label,field" cellpadding="8">
+                <h:outputLabel for="className" value="Тип объекта:"/>
+                <p:selectOneMenu id="className" value="#{searchBean.className}" required="true"
+                                 styleClass="input-field" style="width:200px;">
+                    <f:selectItems value="#{searchBean.classNameList}" var="name" itemValue="#{name}"
+                                   itemLabel="#{name}"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel for="ID_value" value="ID:"/>
+                <p:inputText id="ID_value" value="#{searchBean.id}" required="true" placeholder="Введите ID"
+                             styleClass="input-field" style="width:200px;"/>
+            </h:panelGrid>
+
+            <div class="button-wrapper">
+                <p:commandButton value="Найти" icon="pi pi-search" action="#{searchBean.findByID}" ajax="false"
+                                 styleClass="find-button"/>
+            </div>
+        </h:form>
+    </div>
+</h:body>
+
+</html>

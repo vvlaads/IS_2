@@ -1,0 +1,38 @@
+.spec-section {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px 25px;
+    margin: 20px auto;
+    max-width: 650px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.spec-section h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.spec-section label {
+    display: block;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+.spec-section .p-inputtext {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.spec-section .p-button {
+    background-color: #4a90e2;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 600;
+}
+
+.spec-section .p-button:hover {
+    background-color: #3b7dd8;
+}

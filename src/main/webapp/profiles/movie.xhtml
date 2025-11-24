@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>Информация о фильме</title>
+    <h:outputStylesheet name="styles.css"/>
+    <h:outputStylesheet name="profiles.css"/>
+</h:head>
+
+<h:body>
+    <p:poll interval="5"
+            listener="#{updateController.checkMovieProfileUpdates}"
+            update=":movieProfileForm"
+            onerror="window.location.reload();"
+            global="false"/>
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{movieProfileBean.id}"/>
+    </f:metadata>
+
+    <ui:include src="/templates/topMenu.xhtml"/>
+
+    <h:form id="movieProfileForm">
+        <h:panelGroup rendered="#{movieProfileBean.movie != null}" layout="block" styleClass="object-profile-card">
+
+            <h2 class="object-title">Фильм</h2>
+            <p class="object-id">ID: #{movieProfileBean.movie.id}</p>
+            <div class="actions">
+                <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
+                                 actionListener="#{movieDialogBean.openEditDialog(m.id)}"
+                                 oncomplete="PF('movieDialog').show();"
+                                 update=":movieDialogForm"/>
+
+                <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
+                                 action="#{movieBean.deleteMovie(m.id)}"
+                                 update=":movieProfileForm"
+                                 process="@this"
+                                 onclick="if(!confirm('Вы уверены, что хотите удалить фильм \\'#{m.name}\\'?')) return false;"/>
+            </div>
+
+            <div class="object-info-columns">
+                <div class="object-column">
+                    <h3>Общее</h3>
+                    <p><strong>Название:</strong> #{movieProfileBean.movie.name}</p>
+                    <p><strong>Продолжительность:</strong> #{movieProfileBean.movie.length} мин</p>
+                    <p><strong>Жанр:</strong> #{movieProfileBean.movie.genre}</p>
+                    <p><strong>MPAA:</strong> #{movieProfileBean.movie.mpaaRating}</p>
+                    <p><strong>Оскары:</strong> #{movieProfileBean.movie.oscarsCount}</p>
+                    <p><strong>Золотые пальмы:</strong> #{movieProfileBean.movie.goldenPalmCount}</p>
+                    <p><strong>Координаты:</strong> ID: #{movieProfileBean.movie.coordinates.id}
+                        (#{movieProfileBean.movie.coordinates.x},
+                        #{movieProfileBean.movie.coordinates.y})</p>
+                    <p><strong>Дата создания:</strong> #{movieProfileBean.movie.creationDate}</p>
+                </div>
+
+                <div class="object-column">
+                    <h3>Финансы</h3>
+                    <p><strong>Бюджет:</strong>
+                        #{formatBean.formatMoney(movieProfileBean.movie.budget)} $</p>
+                    <p><strong>Общие сборы:</strong>
+                        #{formatBean.formatMoney(movieProfileBean.movie.totalBoxOffice)} $</p>
+                    <p><strong>Сборы в США:</strong>
+                        #{formatBean.formatMoney(movieProfileBean.movie.usaBoxOffice)} $</p>
+                </div>
+            </div>
+
+            <div class="object-info-columns">
+                <div class="object-column subclass-card">
+                    <h3>Режиссёр</h3>
+                    <p><strong>ID:</strong> #{movieProfileBean.movie.director.id}</p>
+                    <p><strong>Имя:</strong> #{movieProfileBean.movie.director.name}</p>
+                    <p><strong>Цвет глаз:</strong> #{movieProfileBean.movie.director.eyeColor}</p>
+                    <p><strong>Цвет волос:</strong> #{movieProfileBean.movie.director.hairColor}</p>
+                    <p><strong>Местоположение:</strong> ID: #{movieProfileBean.movie.director.location.id}
+                        (#{movieProfileBean.movie.director.location.x},
+                        #{movieProfileBean.movie.director.location.y},
+                        #{movieProfileBean.movie.director.location.z})</p>
+                    <p><strong>Дата рождения:</strong> #{movieProfileBean.movie.director.birthday}</p>
+                    <p><strong>Вес:</strong> #{movieProfileBean.movie.director.weight}</p>
+                    <p><strong>Паспорт:</strong> #{movieProfileBean.movie.director.passportID}</p>
+                </div>
+
+                <div class="object-column subclass-card">
+                    <h3>Сценарист</h3>
+                    <p><strong>ID:</strong> #{movieProfileBean.movie.screenwriter.id}</p>
+                    <p><strong>Имя:</strong> #{movieProfileBean.movie.screenwriter.name}</p>
+                    <p><strong>Цвет глаз:</strong> #{movieProfileBean.movie.screenwriter.eyeColor}</p>
+                    <p><strong>Цвет волос:</strong> #{movieProfileBean.movie.screenwriter.hairColor}</p>
+                    <p><strong>Местоположение:</strong> ID: #{movieProfileBean.movie.screenwriter.location.id}
+                        (#{movieProfileBean.movie.screenwriter.location.x},
+                        #{movieProfileBean.movie.screenwriter.location.y},
+                        #{movieProfileBean.movie.screenwriter.location.z})</p>
+                    <p><strong>Дата рождения:</strong> #{movieProfileBean.movie.screenwriter.birthday}</p>
+                    <p><strong>Вес:</strong> #{movieProfileBean.movie.screenwriter.weight}</p>
+                    <p><strong>Паспорт:</strong> #{movieProfileBean.movie.screenwriter.passportID}</p>
+                </div>
+
+                <div class="object-column subclass-card">
+                    <h3>Оператор</h3>
+                    <p><strong>ID:</strong> #{movieProfileBean.movie.operator.id}</p>
+                    <p><strong>Имя:</strong> #{movieProfileBean.movie.operator.name}</p>
+                    <p><strong>Цвет глаз:</strong> #{movieProfileBean.movie.operator.eyeColor}</p>
+                    <p><strong>Цвет волос:</strong> #{movieProfileBean.movie.operator.hairColor}</p>
+                    <p><strong>Местоположение:</strong> ID: #{movieProfileBean.movie.operator.location.id}
+                        (#{movieProfileBean.movie.operator.location.x},
+                        #{movieProfileBean.movie.operator.location.y},
+                        #{movieProfileBean.movie.operator.location.z})</p>
+                    <p><strong>Дата рождения:</strong> #{movieProfileBean.movie.operator.birthday}</p>
+                    <p><strong>Вес:</strong> #{movieProfileBean.movie.operator.weight}</p>
+                    <p><strong>Паспорт:</strong> #{movieProfileBean.movie.operator.passportID}</p>
+                </div>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{movieProfileBean.movie == null}">
+            <h2 class="no-data">Фильм не найден</h2>
+        </h:panelGroup>
+    </h:form>
+
+    <ui:include src="/dialogs/movieDialog.xhtml"/>
+</h:body>
+</html>

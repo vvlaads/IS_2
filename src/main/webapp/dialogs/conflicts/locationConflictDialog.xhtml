@@ -1,0 +1,85 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <h:outputStylesheet name="conflicts.css"/>
+    </h:head>
+
+    <p:poll interval="5"
+            listener="#{updateController.checkAllUpdates}"
+            update=":locationConflictForm"
+            onerror="window.location.reload();"
+            global="false"/>
+
+
+    <p:dialog header="Люди, конфликтующие с локацией"
+              widgetVar="locationConflictDialog"
+              modal="true"
+              closable="true"
+              resizable="false"
+              draggable="false"
+              styleClass="conflict-dialog"
+              width="85vw">
+        <h:form id="locationConflictForm" styleClass="conflict-form">
+            <p:dataTable id="locationConflictTable"
+                         styleClass="conflict-table"
+                         value="#{locationConflicts.conflictPersonList}"
+                         var="p"
+                         paginator="true"
+                         rows="5"
+                         scrollable="true"
+                         scrollHeight="60vh">
+                <p:column headerText="Действие" style="text-align:center;" width="200">
+                    <div class="action-column">
+                        <p:commandButton styleClass="action-button" value="Посмотреть" icon="pi pi-search"
+                                         action="#{redirectBean.toPerson(p.id)}"/>
+
+                        <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
+                                         actionListener="#{personDialogBean.openEditDialog(p.id)}"
+                                         oncomplete="PF('personDialog').show();"
+                                         update=":personDialogForm"/>
+
+                        <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
+                                         action="#{personBean.deletePerson(p.id)}"
+                                         update=":locationConflictForm"
+                                         process="@this"
+                                         onclick="if(!confirm('Вы уверены, что хотите удалить человека \\'#{p.name}\\'?')) return false;"/>
+                    </div>
+                </p:column>
+                <p:column headerText="ID" style="text-align:center;" width="100">#{p.id}</p:column>
+                <p:column headerText="Имя"
+                          style="text-align:center;"
+                          width="200">
+                    #{p.name}
+                </p:column>
+                <p:column headerText="Цвет глаз"
+                          style="text-align:center;" width="200"> #{p.eyeColor}
+                </p:column>
+                <p:column headerText="Цвет волос"
+                          style="text-align:center;" width="200"> #{p.hairColor}
+                </p:column>
+                <p:column headerText="Локация" style="text-align:center;" width="200">(#{p.location.x}, #{p.location.y},
+                    #{p.location.z})
+                </p:column>
+                <p:column headerText="Дата рождения" style="text-align:center;" width="200">#{p.birthday}</p:column>
+                <p:column headerText="Вес" style="text-align:center;" width="200">#{p.weight}</p:column>
+                <p:column headerText="passportID"
+                          style="text-align:center;" width="200">
+                    #{p.passportID}
+                </p:column>
+            </p:dataTable>
+            <h:outputLabel value="Некоторые люди зависят от этого объекта!"
+                           rendered="#{!locationConflicts.allowed}"/>
+            <br/>
+            <p:commandButton value="Удалить"
+                             action="#{locationConflicts.deleteLocation()}"
+                             disabled="#{!locationConflicts.allowed}"
+                             oncomplete="PF('locationConflictDialog').hide();"/>
+            <p:commandButton value="Отмена"
+                             oncomplete="PF('locationConflictDialog').hide();"
+                             style="margin-left:10px;"/>
+        </h:form>
+    </p:dialog>
+</ui:composition>

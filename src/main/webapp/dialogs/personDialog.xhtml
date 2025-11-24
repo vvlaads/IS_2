@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <h:outputStylesheet name="dialogs.css"/>
+    </h:head>
+
+    <p:dialog header="#{personDialogBean.editing ? 'Редактировать человека' : 'Добавить человека'}"
+              widgetVar="personDialog"
+              modal="true"
+              closable="true">
+        <div class="form-container">
+            <h:form id="personDialogForm">
+                <h:panelGrid columns="2" columnClasses="labelCol,fieldCol" cellpadding="8" style="width:100%">
+                    <h:outputLabel for="name" value="Имя:" style="text-align:right;"/>
+                    <p:inputText id="name" value="#{personDialogBean.person.name}" required="true"/>
+                    <h:outputLabel/>
+                    <p:message for="name" style="color:red"/>
+
+                    <h:outputLabel for="eyeColor" value="Цвет глаз:" style="text-align:right;"/>
+                    <p:selectOneMenu id="eyeColor" value="#{personDialogBean.person.eyeColor}" required="true">
+                        <f:selectItems value="#{personDialogBean.colorList}" var="color"
+                                       itemValue="#{color}" itemLabel="#{color}"/>
+                    </p:selectOneMenu>
+                    <h:outputLabel/>
+                    <p:message for="eyeColor" style="color:red"/>
+
+                    <h:outputLabel for="hairColor" value="Цвет волос:" style="text-align:right;"/>
+                    <p:selectOneMenu id="hairColor" value="#{personDialogBean.person.hairColor}" required="true">
+                        <f:selectItems value="#{personDialogBean.colorList}" var="color"
+                                       itemValue="#{color}" itemLabel="#{color}"/>
+                    </p:selectOneMenu>
+                    <h:outputLabel/>
+                    <p:message for="hairColor" style="color:red"/>
+
+                    <h:outputLabel for="location" value="Локация:" style="text-align:right;"/>
+                    <p:selectOneMenu id="location" value="#{personDialogBean.selectedLocationId}" required="true">
+                        <f:selectItems value="#{locationBean.locationList}" var="loc"
+                                       itemValue="#{loc.id}" itemLabel="ID: #{loc.id} (#{loc.x}, #{loc.y}, #{loc.z})"/>
+                    </p:selectOneMenu>
+                    <h:outputLabel/>
+                    <p:message for="location" style="color:red"/>
+
+                    <h:outputLabel for="birthday" value="Дата рождения:" style="text-align:right;"/>
+                    <p:datePicker id="birthday"
+                                  value="#{personDialogBean.person.birthday}"
+                                  pattern="dd.MM.yyyy"
+                                  showIcon="false"
+                                  required="false"/>
+                    <h:outputLabel/>
+                    <p:message for="birthday" style="color:red"/>
+
+                    <h:outputLabel for="weight" value="Вес:" style="text-align:right;"/>
+                    <p:inputText id="weight" value="#{personDialogBean.person.weight}" required="true"/>
+                    <h:outputLabel/>
+                    <p:message for="weight" style="color:red"/>
+
+                    <h:outputLabel for="passportID" value="passportID:" style="text-align:right;"/>
+                    <p:inputText id="passportID" value="#{personDialogBean.person.passportID}" required="true"/>
+                    <h:outputLabel/>
+                    <p:message for="passportID" style="color:red"/>
+
+                </h:panelGrid>
+
+                <div class="buttons">
+                    <p:commandButton value="Добавить" action="#{personDialogBean.addPerson()}"
+                                     rendered="#{!personDialogBean.editing}" oncomplete="PF('personDialog').hide();"/>
+                    <p:commandButton value="Сохранить" action="#{personDialogBean.updatePerson()}"
+                                     rendered="#{personDialogBean.editing}" oncomplete="PF('personDialog').hide();"/>
+                    <p:commandButton value="Отмена"
+                                     oncomplete="PF('personDialog').hide();"
+                                     style="margin-left:10px;"/>
+                </div>
+            </h:form>
+        </div>
+    </p:dialog>
+</ui:composition>

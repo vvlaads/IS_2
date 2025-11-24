@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+
+    <persistence-unit name="PersistenceUnit" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>java:jboss/datasources/labs</jta-data-source>
+
+        <!-- Сущности -->
+        <class>lab.data.Coordinates</class>
+        <class>lab.data.Location</class>
+        <class>lab.data.Movie</class>
+        <class>lab.data.Person</class>
+
+        <!-- Настройки БД -->
+        <properties>
+            <property name="javax.persistence.schema-generation.database.action" value="none"/>
+            <property name="eclipselink.ddl-generation" value="none"/>
+            <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
+

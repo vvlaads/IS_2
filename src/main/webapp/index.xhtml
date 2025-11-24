@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>IS_1</title>
+    <h:outputStylesheet name="styles.css"/>
+    <h:outputStylesheet name="index.css"/>
+</h:head>
+
+<h:body>
+    <p:poll interval="5"
+            listener="#{updateController.checkAllUpdates}"
+            update=":movieForm:movieTable :personForm:personTable :locationForm:locationTable :coordinatesForm:coordinatesTable"
+            onerror="window.location.reload();"
+            global="false"/>
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{navigationBean.markPage('index')}"/>
+    </f:metadata>
+
+    <ui:include src="/templates/topMenu.xhtml"/>
+
+    <h2>Список фильмов:</h2>
+    <div class="table-container">
+        <div class="table-settings">
+            <h3>Фильтры:</h3>
+            <h:form class="filterForm">
+                <h:panelGrid columns="2" cellpadding="8" style="width:100%">
+                    <h:outputLabel for="nameFilter" value="Название:" style="text-align:right;"/>
+                    <p:inputText id="nameFilter" value="#{movieBean.nameFilter}" required="false"/>
+
+                    <h:outputLabel for="mpaaRatingFilter" value="Рейтинг MPAA:" style="text-align:right;"/>
+                    <p:inputText id="mpaaRatingFilter" value="#{movieBean.mpaaRatingFilter}" required="false"/>
+
+                    <h:outputLabel for="genreFilter" value="Жанр:" style="text-align:right;"/>
+                    <p:inputText id="genreFilter" value="#{movieBean.genreFilter}" required="false"/>
+
+                    <p:commandButton value="Применить фильтры" action="#{movieBean.applyFiltersAndSort()}"
+                                     update=":movieForm:movieTable"/>
+                    <p:commandButton value="Сбросить фильтры" action="#{movieBean.removeFilters()}"
+                                     update=":movieForm:movieTable"/>
+                </h:panelGrid>
+            </h:form>
+
+            <h:form class="sortForm">
+                <h:panelGrid columns="2" cellpadding="8" style="width:100%">
+                    <h3>Сортировка:</h3>
+                    <p:selectOneMenu id="sortMovie"
+                                     value="#{movieBean.sortByColumn}"
+                                     required="false">
+                        <f:selectItems value="#{movieBean.sortColumns}"
+                                       var="columnName"
+                                       itemValue="#{columnName}"
+                                       itemLabel="#{columnName}"/>
+
+                        <!-- Когда пользователь меняет значение -->
+                        <p:ajax event="change"
+                                listener="#{movieBean.applyFiltersAndSort}"
+                                update=":movieForm:movieTable"/>
+                    </p:selectOneMenu>
+                </h:panelGrid>
+            </h:form>
+        </div>
+        <h:form id="movieForm" style="width: 70%;">
+            <p:dataTable id="movieTable"
+                         class="data-table"
+                         value="#{movieBean.filteredMovieList}"
+                         var="m"
+                         paginator="true"
+                         rows="5"
+                         scrollable="true"
+                         scrollWidth="100%">
+                <p:column headerText="Действие" style="text-align:center;" width="200">
+                    <div class="action-column">
+                        <p:commandButton styleClass="action-button" value="Посмотреть" icon="pi pi-search"
+                                         action="#{redirectBean.toMovie(m.id)}"/>
+
+                        <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
+                                         actionListener="#{movieDialogBean.openEditDialog(m.id)}"
+                                         oncomplete="PF('movieDialog').show();"
+                                         update=":movieDialogForm"/>
+
+                        <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
+                                         action="#{movieBean.deleteMovie(m.id)}"
+                                         update=":movieForm:movieTable"
+                                         process="@this"
+                                         onclick="if(!confirm('Вы уверены, что хотите удалить фильм \\'#{m.name}\\'?')) return false;"/>
+                    </div>
+                </p:column>
+                <p:column headerText=" ID
+                    " style="text-align:center;" width="100">#{m.id}
+                </p:column>
+                <p:column headerText="Название" style="text-align:center;" width="200"> #{m.name}</p:column>
+                <p:column headerText="Координаты" style="text-align:center;" width="200"> (#{m.coordinates.x},
+                    #{m.coordinates.y})
+                </p:column>
+                <p:column headerText="Дата создания" style="text-align:center;" width="200"> #{m.creationDate}
+                </p:column>
+                <p:column headerText="Оскары" style="text-align:center;" width="100">#{m.oscarsCount}</p:column>
+                <p:column headerText="Бюджет" style="text-align:center;" width="200">#{formatBean.formatMoney(m.budget)}
+                    $
+                </p:column>
+                <p:column headerText="Общие кассовые сборы" style="text-align:center;" width="200">
+                    #{formatBean.formatMoney(m.totalBoxOffice)} $
+                </p:column>
+                <p:column headerText="Рейтинг MPAA" style="text-align:center;" width="200">#{m.mpaaRating}</p:column>
+                <p:column headerText="Режиссёр" style="text-align:center;" width="200"> #{m.director.name}</p:column>
+                <p:column headerText="Сценарист" style="text-align:center;" width="200">#{m.screenwriter.name}
+                </p:column>
+                <p:column headerText="Оператор" style="text-align:center;" width="200">#{m.operator.name}</p:column>
+                <p:column headerText="Продолжительность" style="text-align:center;" width="200">#{m.length}</p:column>
+                <p:column headerText="Золотые пальмовые ветки" style="text-align:center;" width="100">
+                    #{m.goldenPalmCount}
+                </p:column>
+                <p:column headerText="Кассовые сборы в США" style="text-align:center;" width="200">
+                    #{formatBean.formatMoney(m.usaBoxOffice)} $
+                </p:column>
+                <p:column headerText="Жанр" style="text-align:center;" width="200">#{m.genre}</p:column>
+            </p:dataTable>
+        </h:form>
+    </div>
+
+    <h2>Список людей:</h2>
+    <div class="table-container">
+        <div class="table-settings">
+            <h3>Фильтры:</h3>
+            <h:form class="filterForm">
+                <h:panelGrid columns="2" cellpadding="8" style="width:100%">
+                    <h:outputLabel for="nameFilter" value="Имя:" style="text-align:right;"/>
+                    <p:inputText id="nameFilter" value="#{personBean.nameFilter}" required="false"/>
+
+                    <h:outputLabel for="eyeColorFilter" value="Цвет глаз:" style="text-align:right;"/>
+                    <p:inputText id="eyeColorFilter" value="#{personBean.eyeColorFilter}" required="false"/>
+
+                    <h:outputLabel for="hairColorFilter" value="Цвет волос:" style="text-align:right;"/>
+                    <p:inputText id="hairColorFilter" value="#{personBean.hairColorFilter}" required="false"/>
+
+                    <h:outputLabel for="passportIDFilter" value="PassportID:" style="text-align:right;"/>
+                    <p:inputText id="passportIDFilter" value="#{personBean.passportIDFilter}" required="false"/>
+
+                    <p:commandButton value="Применить фильтры" action="#{personBean.applyFilters()}"
+                                     update=":personForm:personTable"/>
+                    <p:commandButton value="Сбросить фильтры" action="#{personBean.removeFilters()}"
+                                     update=":personForm:personTable"/>
+                </h:panelGrid>
+            </h:form>
+
+            <h:form class="sortForm">
+                <h:panelGrid columns="2" cellpadding="8" style="width:100%">
+                    <h3>Сортировка:</h3>
+                    <p:selectOneMenu id="sortPerson"
+                                     value="#{personBean.sortByColumn}"
+                                     required="false">
+                        <f:selectItems value="#{personBean.sortColumns}"
+                                       var="columnName"
+                                       itemValue="#{columnName}"
+                                       itemLabel="#{columnName}"/>
+
+                        <!-- Когда пользователь меняет значение -->
+                        <p:ajax event="change"
+                                listener="#{personBean.applySort}"
+                                update=":personForm:personTable"/>
+                    </p:selectOneMenu>
+                </h:panelGrid>
+            </h:form>
+        </div>
+        <h:form id="personForm" style="width: 70%;">
+            <p:dataTable id="personTable"
+                         class="data-table"
+                         value="#{personBean.filteredPersonList}"
+                         var="p"
+                         paginator="true"
+                         rows="5"
+                         scrollable="true"
+                         scrollWidth="100%">
+                <p:column headerText="Действие" style="text-align:center;" width="200">
+                    <div class="action-column">
+                        <p:commandButton styleClass="action-button" value="Посмотреть" icon="pi pi-search"
+                                         action="#{redirectBean.toPerson(p.id)}"/>
+
+                        <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
+                                         actionListener="#{personDialogBean.openEditDialog(p.id)}"
+                                         oncomplete="PF('personDialog').show();"
+                                         update=":personDialogForm"/>
+
+                        <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
+                                         actionListener="#{personConflicts.findMoviesWithConflicts(p.id)}"
+                                         oncomplete="PF('personConflictDialog').show();"
+                                         update=":personConflictForm"/>
+                    </div>
+                </p:column>
+                <p:column headerText="ID" style="text-align:center;" width="100">#{p.id}</p:column>
+                <p:column headerText="Имя"
+                          style="text-align:center;"
+                          width="200">
+                    #{p.name}
+                </p:column>
+                <p:column headerText="Цвет глаз"
+                          style="text-align:center;" width="200"> #{p.eyeColor}
+                </p:column>
+                <p:column headerText="Цвет волос"
+                          style="text-align:center;" width="200"> #{p.hairColor}
+                </p:column>
+                <p:column headerText="Локация" style="text-align:center;" width="200">(#{p.location.x}, #{p.location.y},
+                    #{p.location.z})
+                </p:column>
+                <p:column headerText="Дата рождения" style="text-align:center;" width="200">#{p.birthday}</p:column>
+                <p:column headerText="Вес" style="text-align:center;" width="200">#{p.weight}</p:column>
+                <p:column headerText="passportID"
+                          style="text-align:center;" width="200">
+                    #{p.passportID}
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </div>
+
+    <h2>Список локаций:</h2>
+    <h:form id="locationForm" style="width: 90%; margin: 0 auto; display: block;">
+        <p:dataTable id="locationTable"
+                     class="data-table"
+                     value="#{locationBean.locationList}"
+                     var="l"
+                     paginator="true"
+                     rows="5"
+                     scrollable="true"
+                     scrollWidth="100%">
+            <p:column headerText="Действие" style="text-align:center;" width="20%">
+                <div class="action-column">
+                    <p:commandButton styleClass="action-button" value="Посмотреть" icon="pi pi-search"
+                                     action="#{redirectBean.toLocation(l.id)}"/>
+
+                    <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
+                                     actionListener="#{locationDialogBean.openEditDialog(l.id)}"
+                                     oncomplete="PF('locationDialog').show();"
+                                     update=":locationDialogForm"/>
+
+                    <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
+                                     actionListener="#{locationConflicts.findPersonsWithConflicts(l.id)}"
+                                     oncomplete="PF('locationConflictDialog').show();"
+                                     update=":locationConflictForm"/>
+                </div>
+            </p:column>
+            <p:column headerText="ID" style="text-align:center;" width="20%">#{l.id}</p:column>
+            <p:column headerText="X" style="text-align:center;" width="20%"> #{l.x}</p:column>
+            <p:column headerText="Y" style="text-align:center;" width="20%"> #{l.y}</p:column>
+            <p:column headerText="Z" style="text-align:center;" width="20%"> #{l.z}</p:column>
+        </p:dataTable>
+    </h:form>
+
+    <h2>Список координат:</h2>
+    <h:form id="coordinatesForm" style="width: 90%; margin: 0 auto; display: block;">
+        <p:dataTable id="coordinatesTable"
+                     class="data-table"
+                     value="#{coordinatesBean.coordinatesList}"
+                     var="c"
+                     paginator="true"
+                     rows="5"
+                     scrollable="true"
+                     scrollWidth="100%">
+            <p:column headerText="Действие" style="text-align:center;" width="25%">
+                <div class="action-column">
+                    <p:commandButton styleClass="action-button" value="Посмотреть" icon="pi pi-search"
+                                     action="#{redirectBean.toCoordinates(c.id)}"/>
+
+                    <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
+                                     actionListener="#{coordinatesDialogBean.openEditDialog(c.id)}"
+                                     oncomplete="PF('coordinatesDialog').show();"
+                                     update=":coordinatesDialogForm"/>
+
+                    <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
+                                     actionListener="#{coordinatesConflicts.findMoviesWithConflicts(c.id)}"
+                                     oncomplete="PF('coordinatesConflictDialog').show();"
+                                     update=":coordinatesConflictForm"/>
+                </div>
+            </p:column>
+            <p:column headerText="ID" style="text-align:center;" width="25%">#{c.id}</p:column>
+            <p:column headerText="X" style="text-align:center;" width="25%"> #{c.x}</p:column>
+            <p:column headerText="Y" style="text-align:center;" width="25%"> #{c.y}</p:column>
+        </p:dataTable>
+    </h:form>
+
+    <ui:include src="/dialogs/movieDialog.xhtml"/>
+    <ui:include src="/dialogs/personDialog.xhtml"/>
+    <ui:include src="/dialogs/locationDialog.xhtml"/>
+    <ui:include src="/dialogs/coordinatesDialog.xhtml"/>
+
+    <ui:include src="/dialogs/conflicts/coordinatesConflictDialog.xhtml"/>
+    <ui:include src="/dialogs/conflicts/locationConflictDialog.xhtml"/>
+    <ui:include src="/dialogs/conflicts/personConflictDialog.xhtml"/>
+</h:body>
+
+</html>

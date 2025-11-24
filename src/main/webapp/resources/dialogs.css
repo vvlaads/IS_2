@@ -1,0 +1,50 @@
+/* Общий контейнер диалога */
+.ui-dialog .form-container {
+    max-height: 70vh; /* Ограничиваем высоту диалога */
+    overflow-y: auto; /* Вертикальная прокрутка, если содержимого много */
+    padding: 10px 15px;
+    box-sizing: border-box;
+}
+
+/* Панель сетки */
+.form-container .ui-panelgrid {
+    width: 100%;
+}
+
+/* Колонки формы */
+.labelCol {
+    text-align: right;
+    font-weight: bold;
+    padding-right: 10px;
+    vertical-align: middle;
+    width: 35%;
+}
+
+.fieldCol {
+    width: 65%;
+}
+
+/* Сообщения об ошибках */
+.ui-messages, .ui-message {
+    font-size: 0.9em;
+    color: red;
+    margin-top: 2px;
+}
+
+/* Кнопки внизу диалога */
+.form-container .buttons {
+    margin-top: 15px;
+    text-align: right;
+}
+
+/* Немного пространства между кнопками */
+.form-container .buttons .ui-button {
+    margin-left: 10px;
+}
+
+/* Выравнивание select и input */
+.form-container .ui-inputtext,
+.form-container .ui-selectonemenu {
+    width: 100%;
+    box-sizing: border-box;
+}

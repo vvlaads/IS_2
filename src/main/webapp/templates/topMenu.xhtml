@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <header>
+        <span id="student-name" class="student-info"> Силинцев Владислав Витальевич</span>
+        <span id="student-group" class="student-info">P3314</span>
+        <span id="student-id" class="student-info">355273</span>
+    </header>
+
+    <h:form>
+        <p:menubar>
+            <p:menuitem value="Главная" icon="pi pi-home"
+                        outcome="/index"
+                        styleClass="#{navigationBean.currentPage eq 'index' ? 'active-menu' : ''}"
+                        ajax="false"/>
+            <p:menuitem value="Поиск по ID" icon="pi pi-search"
+                        outcome="/searchByID"
+                        styleClass="#{navigationBean.currentPage eq 'searchByID' ? 'active-menu' : ''}"
+                        ajax="false"/>
+            <p:menuitem value="Добавить" icon="pi pi-plus"
+                        outcome="/addObject"
+                        styleClass="#{navigationBean.currentPage eq 'addObject' ? 'active-menu' : ''}"
+                        ajax="false"/>
+            <p:menuitem value="Функции" icon="pi pi-star"
+                        outcome="/specFuncs"
+                        styleClass="#{navigationBean.currentPage eq 'specFuncs' ? 'active-menu' : ''}"
+                        ajax="false"/>
+        </p:menubar>
+    </h:form>
+</ui:composition>

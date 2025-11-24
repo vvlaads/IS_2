@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>Информация о координатах</title>
+    <h:outputStylesheet name="styles.css"/>
+    <h:outputStylesheet name="profiles.css"/>
+</h:head>
+
+<h:body>
+    <p:poll interval="5"
+            listener="#{updateController.checkCoordinatesProfileUpdates}"
+            update=":coordinatesProfileForm"
+            onerror="window.location.reload();"
+            global="false"/>
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{coordinatesProfileBean.id}"/>
+    </f:metadata>
+
+    <ui:include src="/templates/topMenu.xhtml"/>
+
+    <h:form id="coordinatesProfileForm">
+        <h:panelGroup rendered="#{coordinatesProfileBean.coordinates != null}" layout="block"
+                      styleClass="object-profile-card">
+
+            <h2 class="object-title">Координаты</h2>
+            <p class="object-id">ID: #{coordinatesProfileBean.coordinates.id}</p>
+            <div class="actions">
+                <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
+                                 actionListener="#{coordinatesDialogBean.openEditDialog(coordinatesProfileBean.id)}"
+                                 oncomplete="PF('coordinatesDialog').show();"
+                                 update=":coordinatesDialogForm"/>
+
+                <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
+                                 actionListener="#{coordinatesConflicts.findMoviesWithConflicts(coordinatesProfileBean.id)}"
+                                 oncomplete="PF('coordinatesConflictDialog').show();"
+                                 update=":coordinatesConflictForm"/>
+            </div>
+
+            <div class="object-info-columns">
+                <div class="object-column">
+                    <h3>Общее</h3>
+                    <p><strong>X:</strong> #{coordinatesProfileBean.coordinates.x}</p>
+                    <p><strong>Y:</strong> #{coordinatesProfileBean.coordinates.y}</p>
+                </div>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{coordinatesProfileBean.coordinates == null}">
+            <h2 class="no-data">Координаты не найдены</h2>
+        </h:panelGroup>
+    </h:form>
+
+    <ui:include src="/dialogs/coordinatesDialog.xhtml"/>
+    <ui:include src="/dialogs/conflicts/coordinatesConflictDialog.xhtml"/>
+    <ui:include src="/dialogs/movieDialog.xhtml"/>
+</h:body>
+</html>

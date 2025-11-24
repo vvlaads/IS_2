@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <h:outputStylesheet name="conflicts.css"/>
+    </h:head>
+
+    <p:poll interval="5"
+            listener="#{updateController.checkAllUpdates}"
+            update=":coordinatesConflictForm"
+            onerror="window.location.reload();"
+            global="false"/>
+
+
+    <p:dialog header="Фильмы, конфликтующие с координатами"
+              widgetVar="coordinatesConflictDialog"
+              modal="true"
+              closable="true"
+              resizable="false"
+              draggable="false"
+              styleClass="conflict-dialog"
+              width="85vw">
+        <h:form id="coordinatesConflictForm" styleClass="conflict-form">
+            <p:dataTable id="coordinatesConflictTable"
+                         styleClass="conflict-table"
+                         value="#{coordinatesConflicts.conflictMovieList}"
+                         var="m"
+                         paginator="true"
+                         rows="5"
+                         scrollable="true"
+                         scrollHeight="60vh">
+                <p:column headerText="Действие" style="text-align:center;" width="200">
+                    <div class="action-column">
+                        <p:commandButton styleClass="action-button" value="Посмотреть" icon="pi pi-search"
+                                         action="#{redirectBean.toMovie(m.id)}"/>
+
+                        <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
+                                         actionListener="#{movieDialogBean.openEditDialog(m.id)}"
+                                         oncomplete="PF('movieDialog').show();"
+                                         update=":movieDialogForm"/>
+
+                        <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
+                                         action="#{movieBean.deleteMovie(m.id)}"
+                                         update=":coordinatesConflictForm"
+                                         process="@this"
+                                         onclick="if(!confirm('Вы уверены, что хотите удалить фильм \\'#{m.name}\\'?')) return false;"/>
+                    </div>
+                </p:column>
+
+                <p:column headerText="ID" style="text-align:center;" width="100">#{m.id}</p:column>
+                <p:column headerText="Название" style="text-align:center;" width="200">#{m.name}</p:column>
+                <p:column headerText="Координаты" style="text-align:center;" width="200">
+                    (#{m.coordinates.x}, #{m.coordinates.y})
+                </p:column>
+                <p:column headerText="Дата создания" style="text-align:center;" width="200">#{m.creationDate}</p:column>
+                <p:column headerText="Оскары" style="text-align:center;" width="100">#{m.oscarsCount}</p:column>
+                <p:column headerText="Бюджет" style="text-align:center;" width="200">
+                    #{formatBean.formatMoney(m.budget)} $
+                </p:column>
+                <p:column headerText="Общие кассовые сборы" style="text-align:center;" width="200">
+                    #{formatBean.formatMoney(m.totalBoxOffice)} $
+                </p:column>
+                <p:column headerText="Рейтинг MPAA" style="text-align:center;" width="200">#{m.mpaaRating}</p:column>
+                <p:column headerText="Режиссёр" style="text-align:center;" width="200">#{m.director.name}</p:column>
+                <p:column headerText="Сценарист" style="text-align:center;" width="200">#{m.screenwriter.name}
+                </p:column>
+                <p:column headerText="Оператор" style="text-align:center;" width="200">#{m.operator.name}</p:column>
+                <p:column headerText="Продолжительность" style="text-align:center;" width="200">#{m.length}</p:column>
+                <p:column headerText="Золотые пальмовые ветки" style="text-align:center;" width="100">
+                    #{m.goldenPalmCount}
+                </p:column>
+                <p:column headerText="Кассовые сборы в США" style="text-align:center;" width="200">
+                    #{formatBean.formatMoney(m.usaBoxOffice)} $
+                </p:column>
+                <p:column headerText="Жанр" style="text-align:center;" width="200">#{m.genre}</p:column>
+            </p:dataTable>
+            <h:outputLabel value="Некоторые фильмы зависят от этого объекта!"
+                           rendered="#{!coordinatesConflicts.allowed}"/>
+            <br/>
+            <p:commandButton value="Удалить"
+                             action="#{coordinatesConflicts.deleteCoordinates()}"
+                             disabled="#{!coordinatesConflicts.allowed}"
+                             oncomplete="PF('coordinatesConflictDialog').hide();"/>
+            <p:commandButton value="Отмена"
+                             oncomplete="PF('coordinatesConflictDialog').hide();"
+                             style="margin-left:10px;"/>
+        </h:form>
+    </p:dialog>
+</ui:composition>

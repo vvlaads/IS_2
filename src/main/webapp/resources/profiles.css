@@ -1,0 +1,91 @@
+.object-profile-card {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px 40px;
+    background-color: #ffffff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.object-title {
+    text-align: center;
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.object-id {
+    text-align: center;
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 20px;
+}
+
+.object-info-columns {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.object-column {
+    flex: 0 0 48%;
+    margin-bottom: 10px;
+}
+
+.object-column h3 {
+    font-size: 18px;
+    color: #34495e;
+    margin-bottom: 8px;
+}
+
+.object-column p {
+    font-size: 14px;
+    margin: 3px 0;
+}
+
+.object-column p strong {
+    color: #2c3e50;
+}
+
+.subclass-card {
+    background-color: #f9f9f9;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+}
+
+.subclass-card h3 {
+    color: #1a5276;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.subclass-card p {
+    font-size: 13px;
+    margin: 2px 0;
+}
+
+.no-data {
+    text-align: center;
+}
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+
+.action-button {
+    width: 200px;
+}
+
+.delete-button {
+     background-color: #ff6d6d !important;
+}

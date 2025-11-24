@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>IS_1 — Специальные функции</title>
+    <h:outputStylesheet name="styles.css"/>
+    <h:outputStylesheet name="specFuncs.css"/>
+</h:head>
+
+<h:body>
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{navigationBean.markPage('specFuncs')}"/>
+    </f:metadata>
+
+    <ui:include src="/templates/topMenu.xhtml"/>
+
+    <!-- 1. Удалить по goldenPalmCount -->
+    <h:form id="deleteByGoldenPalmCountForm" styleClass="spec-section">
+        <h2>Удалить один (любой) объект, значение поля goldenPalmCount которого эквивалентно заданному</h2>
+        <h:outputLabel for="goldenPalmCount" value="Число золотых пальм:"/>
+        <p:inputText id="goldenPalmCount" value="#{specialFunctionBean.goldenPalmCount}" required="true"/>
+        <p:commandButton value="Удалить" action="#{specialFunctionBean.deleteByGoldenPalmCount()}"
+                         update=":deleteByGoldenPalmCountForm"/>
+        <h:outputLabel value="ID удаленного фильма:"/>
+        <h:outputLabel value="#{specialFunctionBean.deletedMovieId}"/>
+    </h:form>
+
+    <!-- 2. Вернуть фильмы, имя которых начинается с подстроки -->
+    <h:form styleClass="spec-section" id="namePrefixForm">
+        <h2>Фильмы, имя которых начинается с заданной подстроки</h2>
+        <h:outputLabel for="namePrefix" value="Начало названия:"/>
+        <p:inputText id="namePrefix" value="#{specialFunctionBean.namePrefix}" required="true"/>
+        <p:commandButton value="Показать" action="#{specialFunctionBean.findByNamePrefix()}"
+                         update=":namePrefixForm"/>
+        <p:dataTable value="#{specialFunctionBean.resultMovies}" var="m"
+                     rendered="#{not empty specialFunctionBean.resultMovies}"
+                     style="margin-top:10px;"
+                     paginator="true" rows="5">
+            <p:column headerText="ID">#{m.id}</p:column>
+            <p:column headerText="Название">#{m.name}</p:column>
+            <p:column headerText="Оскары">#{m.oscarsCount}</p:column>
+            <p:column headerText="Продолжительность">#{m.length}</p:column>
+            <p:column headerText="Золотые пальмовые ветки">#{m.goldenPalmCount}</p:column>
+        </p:dataTable>
+    </h:form>
+
+    <!-- 3. Фильмы с goldenPalmCount > заданного -->
+    <h:form styleClass="spec-section" id="greaterPalmForm">
+        <h2>Фильмы с количеством золотых пальм больше заданного</h2>
+        <h:outputLabel for="greaterPalm" value="Минимум золотых пальм:"/>
+        <p:inputText id="greaterPalm" value="#{specialFunctionBean.minGoldenPalm}" required="true"/>
+        <p:commandButton value="Показать" action="#{specialFunctionBean.findByGoldenPalmGreaterThan()}"
+                         update=":greaterPalmForm"/>
+        <p:dataTable value="#{specialFunctionBean.resultMovies}" var="m"
+                     rendered="#{not empty specialFunctionBean.resultMovies}"
+                     style="margin-top:10px;"
+                     paginator="true" rows="5">
+            <p:column headerText="ID">#{m.id}</p:column>
+            <p:column headerText="Название">#{m.name}</p:column>
+            <p:column headerText="GoldenPalms">#{m.goldenPalmCount}</p:column>
+        </p:dataTable>
+    </h:form>
+
+    <!-- 4. Операторы без "Оскаров" -->
+    <h:form styleClass="spec-section" id="operatorsForm">
+        <h2>Операторы, ни один фильм которых не получил "Оскара"</h2>
+        <p:commandButton value="Показать" action="#{specialFunctionBean.findOperatorsWithoutOscars()}"
+                         update=":operatorsForm"/>
+        <p:dataTable value="#{specialFunctionBean.resultOperators}" var="op"
+                     rendered="#{not empty specialFunctionBean.resultOperators}"
+                     style="margin-top:10px;"
+                     paginator="true" rows="5">
+            <p:column headerText="ID">#{op.id}</p:column>
+            <p:column headerText="Имя">#{op.name}</p:column>
+        </p:dataTable>
+    </h:form>
+
+    <!-- 5. Наградить длинные фильмы -->
+    <h:form styleClass="spec-section" id="rewardForm">
+        <h2>Наградить фильмы с продолжительностью больше заданной</h2>
+        <h:outputLabel for="minLength" value="Минимальная продолжительность:"/>
+        <p:inputText id="minLength" value="#{specialFunctionBean.minLength}" required="true"/>
+        <h:outputLabel for="oscarsToAdd" value="Количество 'Оскаров' для добавления:"/>
+        <p:inputText id="oscarsToAdd" value="#{specialFunctionBean.oscarsToAdd}" required="true"/>
+        <p:commandButton value="Наградить" action="#{specialFunctionBean.rewardLongMovies()}"/>
+    </h:form>
+</h:body>
+</html>

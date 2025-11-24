@@ -1,0 +1,13 @@
+.conflict-dialog {
+    height: 90vh !important;
+    overflow-y: auto;
+}
+
+.conflict-form {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.ui-datatable-scrollable-body {
+    scroll-behavior: auto;
+}

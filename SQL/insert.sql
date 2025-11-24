@@ -1,0 +1,101 @@
+INSERT INTO LOCATIONS (X, Y, Z)
+VALUES
+(1.0, 1, 1),
+(12.5, -56, 43),
+(22.3, 104, -4),
+(0.0, 0, 0),
+(45.8, -12, 78),
+(-34.2, 67, -89),
+(120.75, 33, 14),
+(-150.1, -80, 65),
+(87.9, -132, 9),
+(-99.4, 144, -23),
+(56.6, -170, 120),
+(-12.8, -45, -67),
+(200.0, 0, -100),
+(-180.7, 150, 30),
+(75.25, 75, 75),
+(-60.3, -60, -60),
+(15.9, 240, -50),
+(98.2, -12, 5),
+(-33.6, 88, 140),
+(0.45, -200, 180),
+(130.0, -40, -90);
+
+
+
+INSERT INTO COORDINATES (X, Y)
+VALUES
+(0, 0),
+(1, -1),
+(432, -45),
+(-120, 300),
+(55, -230),
+(98, 47),
+(-345, -12),
+(210, 180),
+(-99, 250),
+(400, -400),
+(-250, -310),
+(150, -75),
+(-60, 80),
+(12, -340),
+(275, 95),
+(-10, -10),
+(500, 0),
+(-480, 270),
+(60, -190),
+(-330, 330),
+(45, 220);
+
+
+
+INSERT INTO PERSONS (NAME, EYE_COLOR, HAIR_COLOR, LOCATION_ID, BIRTHDAY, WEIGHT, PASSPORT_ID)
+VALUES
+('Henry', 'RED', 'BLACK', 3, '1987-07-14', 76, 'lgdk-78999'),
+('Alice', 'BROWN', 'RED', 5, '1992-03-10', 58, 'ABCD1234'),
+('Mark', 'BLACK', 'BROWN', 2, NULL, 82, 'M4445'),
+('Diana', 'RED', 'RED', 1, '1999-12-01', 60, 'DIA-9901'),
+('Victor', 'BROWN', 'BLACK', 4, '1985-07-22', 95, 'VPASS9'),
+('Sophia', 'BLACK', 'RED', 8, NULL, 49, 'SPH12345'),
+('Edward', 'RED', 'BROWN', 9, '1978-01-19', 88, 'EDW-178'),
+('Clara', 'BROWN', 'BLACK', 6, '2000-09-15', 52, 'CL9999'),
+('George', 'BLACK', 'RED', 7, '1994-04-23', 70, 'GRG-7777'),
+('Emma', 'RED', 'BLACK', 10, NULL, 56, 'EMMA1001'),
+('Oliver', 'BLACK', 'BROWN', 11, '1989-02-08', 79, 'OLI-222'),
+('Julia', 'BROWN', 'RED', 12, '1995-10-30', 63, 'JULI95'),
+('Arthur', 'RED', 'BLACK', 13, NULL, 90, 'ARTH90'),
+('Liam', 'BLACK', 'BLACK', 14, '2001-11-05', 68, 'LM11'),
+('Grace', 'BROWN', 'BROWN', 15, NULL, 54, 'GRAC5'),
+('Ethan', 'RED', 'BROWN', 16, '1980-05-27', 85, 'ET-805'),
+('Nora', 'BLACK', 'RED', 17, NULL, 59, 'NORAX7'),
+('Oscar', 'BROWN', 'BLACK', 18, '1993-08-13', 74, 'OSC1337'),
+('Ivy', 'RED', 'BROWN', 19, '1998-02-19', 61, 'IVY-1998'),
+('Tester', 'RED', 'BROWN', 7, '1996-03-15', 60, 'test-001'),
+('Caleb', 'BLACK', 'RED', 20, NULL, 72, 'CAL01');
+
+
+
+INSERT INTO MOVIES (NAME, COORDINATES_ID, OSCARS_COUNT, BUDGET, TOTAL_BOX_OFFICE, MPAA_RATING, DIRECTOR_ID, SCREENWRITER_ID, OPERATOR_ID, LENGTH, GOLDEN_PALM_COUNT, USA_BOX_OFFICE, GENRE)
+VALUES
+('Eternal Horizon', 1, 3, 120000000, 350000000, 'PG_13', 2, 5, 7, 142, 1, 180000000, 'ADVENTURE'),
+('Silent Shadows', 2, 1, NULL, 90000000, 'R', NULL, 6, 9, 110, 2, 50000000, 'THRILLER'),
+('Golden Ashes', 3, 2, 40000000, 125000000, NULL, 4, 8, NULL, 98, 1, 60000000, 'DRAMA'),
+('Edge of Nowhere', 4, 0, 80000000, 220000000, 'PG_13', NULL, 3, 5, 128, 3, 150000000, NULL),
+('Crimson Path', 5, 4, 60000000, 190000000, 'R', 1, 9, 2, 117, 2, 120000000, 'HORROR'),
+('Dreamcatcher', 6, 2, NULL, 76000000, NULL, 5, 10, NULL, 104, 1, 40000000, 'DRAMA'),
+('Laughter Lines', 7, 1, 25000000, 70000000, 'PG_13', 2, 1, 8, 97, 1, 45000000, 'COMEDY'),
+('The Iron Veil', 8, 5, 95000000, 310000000, 'R', 3, 4, 6, 155, 4, 200000000, 'THRILLER'),
+('Frozen Echo', 9, 2, 45000000, 150000000, 'PG_13', 8, 2, NULL, 124, 3, 100000000, 'ADVENTURE'),
+('Moonfall', 10, 3, NULL, 280000000, NULL, 10, 7, 5, 139, 2, 180000000, 'DRAMA'),
+('Jester Game', 11, 1, 20000000, 60000000, 'PG_13', NULL, 11, 3, 99, 1, 35000000, 'COMEDY'),
+('Hollow City', 12, 2, 38000000, 140000000, 'R', 6, 12, NULL, 120, 2, 90000000, 'THRILLER'),
+('Whispers of Time', 13, 3, NULL, 170000000, 'PG_13', 9, 13, 10, 115, 1, 100000000, 'DRAMA'),
+('The Last Bloom', 14, 1, 27000000, 80000000, NULL, 4, 14, NULL, 102, 2, 60000000, 'DRAMA'),
+('Night Carnival', 15, 4, 50000000, 210000000, 'R', 7, 15, 2, 144, 3, 140000000, 'HORROR'),
+('Echo Chamber', 16, 2, NULL, 90000000, NULL, NULL, 16, 5, 112, 1, 70000000, 'THRILLER'),
+('Paper Skies', 17, 0, 15000000, 55000000, 'PG_13', 3, 17, 9, 95, 1, 30000000, 'DRAMA'),
+('Runaway Laughter', 18, 3, 42000000, 160000000, 'PG_13', 2, 18, NULL, 107, 2, 95000000, 'COMEDY'),
+('Silent Peak', 19, 5, 85000000, 270000000, 'NC_17', 1, 19, 6, 160, 4, 190000000, 'ADVENTURE'),
+('Test test', 19, 0, 85000000, 270000000, 'NC_17', 1, 19, 20, 160, 4, 190000000, 'ADVENTURE'),
+('Neon Abyss', 20, 2, NULL, 120000000, 'R', NULL, 20, 8, 132, 3, 100000000, 'HORROR');

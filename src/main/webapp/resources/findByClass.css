@@ -1,0 +1,43 @@
+.find-container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 40px 30px;
+    background-color: #ffffff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 14px;
+    text-align: center;
+}
+
+.find-container h2 {
+    color: #2c3e50;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #6c757d;
+    margin-bottom: 25px;
+}
+
+.find-form .label {
+    text-align: right;
+    font-weight: 600;
+    color: #333;
+    padding-right: 10px;
+}
+
+.find-form .field {
+    text-align: left;
+}
+
+.button-wrapper {
+    margin-top: 30px;
+}
+
+.find-button {
+    font-weight: 700;
+}
+
+.find-form .ui-panelgrid-row {
+    margin-bottom: 15px;
+}

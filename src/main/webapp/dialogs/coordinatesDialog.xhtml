@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <h:outputStylesheet name="dialogs.css"/>
+    </h:head>
+
+    <p:dialog header="#{coordinatesDialogBean.editing ? 'Редактировать координаты' : 'Добавить координаты'}"
+              widgetVar="coordinatesDialog"
+              modal="true"
+              closable="true">
+        <div class="form-container">
+            <h:form id="coordinatesDialogForm">
+                <h:panelGrid columns="2" columnClasses="labelCol,fieldCol" cellpadding="8" style="width:100%">
+                    <h:outputLabel for="x" value="X:" style="text-align:right;"/>
+                    <p:inputText id="x" value="#{coordinatesDialogBean.coordinates.x}" required="false"
+                                 requiredMessage="Введите значение X"/>
+                    <h:outputLabel/>
+                    <p:message for="x" style="color:red"/>
+
+                    <h:outputLabel for="y" value="Y:" style="text-align:right;"/>
+                    <p:inputText id="y" value="#{coordinatesDialogBean.coordinates.y}" required="true"/>
+                    <h:outputLabel/>
+                    <p:message for="y" style="color:red"/>
+                </h:panelGrid>
+
+
+                <div class="buttons">
+                    <p:commandButton value="Добавить" action="#{coordinatesDialogBean.addCoordinates()}"
+                                     rendered="#{!coordinatesDialogBean.editing}"
+                                     oncomplete="PF('coordinatesDialog').hide();"/>
+                    <p:commandButton value="Сохранить" action="#{coordinatesDialogBean.updateCoordinates()}"
+                                     rendered="#{coordinatesDialogBean.editing}"
+                                     oncomplete="PF('coordinatesDialog').hide();"/>
+                    <p:commandButton value="Отмена"
+                                     oncomplete="PF('coordinatesDialog').hide();"
+                                     style="margin-left:10px;"/>
+                </div>
+            </h:form>
+        </div>
+    </p:dialog>
+</ui:composition>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>Информация о человеке</title>
+    <h:outputStylesheet name="styles.css"/>
+    <h:outputStylesheet name="profiles.css"/>
+</h:head>
+
+<h:body>
+    <p:poll interval="5"
+            listener="#{updateController.checkPersonProfileUpdates}"
+            update=":personProfileForm"
+            onerror="window.location.reload();"
+            global="false"/>
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{personProfileBean.id}"/>
+    </f:metadata>
+
+    <ui:include src="/templates/topMenu.xhtml"/>
+
+    <h:form id="personProfileForm">
+        <h:panelGroup rendered="#{personProfileBean.person != null}" layout="block" styleClass="object-profile-card">
+
+            <h2 class="object-title">Человек</h2>
+            <p class="object-id">ID: #{personProfileBean.person.id}</p>
+            <div class="actions">
+                <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
+                                 actionListener="#{personDialogBean.openEditDialog(personProfileBean.id)}"
+                                 oncomplete="PF('personDialog').show();"
+                                 update=":personDialogForm"/>
+
+                <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
+                                 actionListener="#{personConflicts.findMoviesWithConflicts(personProfileBean.id)}"
+                                 oncomplete="PF('personConflictDialog').show();"
+                                 update=":personConflictForm"/>
+            </div>
+
+            <div class="object-info-columns">
+                <div class="object-column">
+                    <h3>Общее</h3>
+                    <p><strong>Имя:</strong> #{personProfileBean.person.name}</p>
+                    <p><strong>Цвет глаз:</strong> #{personProfileBean.person.eyeColor}</p>
+                    <p><strong>Цвет волос:</strong> #{personProfileBean.person.hairColor}</p>
+                    <p><strong>Дата рождения:</strong> #{personProfileBean.person.birthday}</p>
+                    <p><strong>Вес:</strong> #{personProfileBean.person.weight}</p>
+                    <p><strong>Паспорт:</strong> #{personProfileBean.person.passportID}</p>
+                </div>
+            </div>
+
+            <div class="object-info-columns">
+                <div class="object-column subclass-card">
+                    <h3>Местоположение</h3>
+                    <p><strong>ID:</strong> #{personProfileBean.person.location.id}</p>
+                    <p><strong>X:</strong> #{personProfileBean.person.location.x}</p>
+                    <p><strong>Y:</strong> #{personProfileBean.person.location.y}</p>
+                    <p><strong>Z:</strong> #{personProfileBean.person.location.z}</p>
+                </div>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{personProfileBean.person == null}">
+            <h2 class="no-data">Человек не найден</h2>
+        </h:panelGroup>
+    </h:form>
+
+    <ui:include src="/dialogs/personDialog.xhtml"/>
+    <ui:include src="/dialogs/conflicts/personConflictDialog.xhtml"/>
+    <ui:include src="/dialogs/movieDialog.xhtml"/>
+</h:body>
+</html>
