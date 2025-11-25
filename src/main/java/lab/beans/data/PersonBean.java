@@ -60,7 +60,7 @@ public class PersonBean implements Updatable {
     }
 
     public void applyFilters() {
-        List<Person> allPersons = databaseManager.getPersonList();
+        List<Person> allPersons = databaseManager.getObjectList(Person.class);
 
         filteredPersonList = allPersons.stream()
                 .filter(p -> nameFilter == null || nameFilter.isEmpty() || p.getName().equals(nameFilter))
@@ -167,6 +167,6 @@ public class PersonBean implements Updatable {
     }
 
     public List<Person> getPersonList() {
-        return databaseManager.getPersonList();
+        return databaseManager.getObjectList(Person.class);
     }
 }

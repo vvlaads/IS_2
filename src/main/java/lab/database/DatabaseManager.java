@@ -5,8 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lab.data.Coordinates;
-import lab.data.Location;
 import lab.data.Movie;
 import lab.data.Person;
 import lab.util.DBObject;
@@ -20,6 +18,8 @@ import javax.validation.ValidationException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
 @Stateless
 public class DatabaseManager {
@@ -77,74 +77,20 @@ public class DatabaseManager {
         }
     }
 
-
-    public List<Movie> getMovieList() {
-        return em.createQuery("SELECT m FROM Movie m", Movie.class).getResultList();
+    public <T extends DBObject> List<T> getObjectList(Class<T> clazz) {
+        String query = "SELECT obj FROM " + clazz.getSimpleName() + " obj";
+        return em.createQuery(query, clazz).getResultList();
     }
 
-    public List<Person> getPersonList() {
-        return em.createQuery("SELECT p FROM Person p", Person.class).getResultList();
-    }
-
-    public List<Location> getLocationList() {
-        return em.createQuery("SELECT l FROM Location l", Location.class).getResultList();
-    }
-
-    public List<Coordinates> getCoordinatesList() {
-        return em.createQuery("SELECT c FROM Coordinates c", Coordinates.class).getResultList();
-    }
-
-    public Movie getMovieById(int id) {
+    public <T extends DBObject> T getObjectById(Class<T> clazz, int id) {
         try {
-            Movie movie = em.find(Movie.class, id);
-            if (movie == null) {
-                System.err.println("Movie not found for id: " + id);
+            T obj = em.find(clazz, id);
+            if (obj == null) {
+                System.err.println(clazz.getSimpleName() + " not found for id: " + id);
             }
-            return movie;
+            return obj;
         } catch (Exception e) {
-            System.err.println("Error while fetching Movie by id: " + id);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public Person getPersonById(int id) {
-        try {
-            Person person = em.find(Person.class, id);
-            if (person == null) {
-                System.err.println("Person not found for id: " + id);
-            }
-            return person;
-        } catch (Exception e) {
-            System.err.println("Error while fetching Person by id: " + id);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public Location getLocationById(int id) {
-        try {
-            Location location = em.find(Location.class, id);
-            if (location == null) {
-                System.err.println("Location not found for id: " + id);
-            }
-            return location;
-        } catch (Exception e) {
-            System.err.println("Error while fetching Location by id: " + id);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public Coordinates getCoordinatesById(int id) {
-        try {
-            Coordinates coordinates = em.find(Coordinates.class, id);
-            if (coordinates == null) {
-                System.err.println("Coordinates not found for id: " + id);
-            }
-            return coordinates;
-        } catch (Exception e) {
-            System.err.println("Error while fetching Coordinates by id: " + id);
+            System.err.println("Error while fetching " + clazz.getSimpleName() + " by id: " + id);
             e.printStackTrace();
             return null;
         }
@@ -242,7 +188,7 @@ public class DatabaseManager {
                 .getResultList();
     }
 
-    public boolean importObjects(byte[] fileContent) {
+    public int importObjects(byte[] fileContent) {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         try {
@@ -260,22 +206,89 @@ public class DatabaseManager {
                 throw new IOException("Unsupported JSON root type: " + root.getNodeType());
             }
 
+            int totalCount = 0;
             for (DBObject obj : objects) {
                 if (!Validator.validateObject(obj)) {
                     throw new ValidationException("Ошибка валидации");
                 }
+                totalCount += countAllObjects(obj);
             }
 
             for (DBObject obj : objects) {
                 em.persist(obj);
             }
-
+            System.out.println("COUNT: " + totalCount + "\n\n\n");
             transaction.commit();
-            return true;
+            return totalCount;
         } catch (Exception e) {
             System.err.println("Ошибка добавления: " + e.getMessage());
             transaction.rollback();
-            return false;
+            return -1;
         }
     }
+
+
+    private int countAllObjects(Object root) {
+        // используем identity set, чтобы корректно обрабатывать циклы
+        Set<Object> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        return countRecursive(root, visited);
+    }
+
+    private int countRecursive(Object current, Set<Object> visited) {
+        if (current == null) return 0;
+        if (visited.contains(current)) return 0;
+        visited.add(current);
+
+        int count = 0;
+        // Если это DBObject — считаем +1
+        if (current instanceof DBObject) {
+            count = 1;
+        }
+
+        Class<?> cls = current.getClass();
+
+        // Если это коллекция — пройтись по элементам
+        if (current instanceof Iterable) {
+            for (Object el : (Iterable<?>) current) {
+                count += countRecursive(el, visited);
+            }
+            return count;
+        }
+
+        // Если это массив
+        if (cls.isArray()) {
+            int len = Array.getLength(current);
+            for (int i = 0; i < len; i++) {
+                Object el = Array.get(current, i);
+                count += countRecursive(el, visited);
+            }
+            return count;
+        }
+
+        // Иначе — смотреть поля (private тоже)
+        while (cls != null && cls != Object.class) {
+            for (Field f : cls.getDeclaredFields()) {
+                f.setAccessible(true);
+                try {
+                    Object val = f.get(current);
+                    if (val == null) continue;
+
+                    // Если поле само DBObject или коллекция/массив — рекурсивно
+                    if (val instanceof DBObject || val instanceof Iterable || val.getClass().isArray()) {
+                        count += countRecursive(val, visited);
+                    } else {
+                        // Можно также рекурсивно спускаться в объекты других типов,
+                        // если есть шанс что внутри них лежат DBObject
+                        // (опционально, по необходимости)
+                    }
+                } catch (IllegalAccessException e) {
+                    // игнорируем/логируем
+                }
+            }
+            cls = cls.getSuperclass();
+        }
+
+        return count;
+    }
+
 }

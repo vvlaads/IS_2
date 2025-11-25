@@ -15,6 +15,9 @@
         <class>lab.data.Movie</class>
         <class>lab.data.Person</class>
 
+        <!-- Вспомогательные сущности -->
+        <class>lab.data.util.Operation</class>
+
         <!-- Настройки БД -->
         <properties>
             <property name="javax.persistence.schema-generation.database.action" value="none"/>

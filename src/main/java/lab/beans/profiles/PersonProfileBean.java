@@ -42,7 +42,7 @@ public class PersonProfileBean implements Updatable {
 
     @Override
     public void updateTable() {
-        person = databaseManager.getPersonById(id);
+        person = databaseManager.getObjectById(Person.class, id);
     }
 
     public int getId() {

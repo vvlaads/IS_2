@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>История операций</title>
+    <h:outputStylesheet name="styles.css"/>
+</h:head>
+
+<h:body>
+    <p:poll interval="5"
+            listener="#{updateController.checkHistoryUpdates}"
+            update=":historyForm:historyTable"
+            onerror="window.location.reload();"
+            global="false"/>
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{navigationBean.markPage('history')}"/>
+    </f:metadata>
+
+    <ui:include src="/templates/topMenu.xhtml"/>
+
+    <h2>История операций:</h2>
+
+    <h:form id="historyForm" style="width: 90%; margin: 0 auto; display: block;">
+        <p:dataTable id="historyTable"
+                     class="data-table"
+                     value="#{operationBean.operationList}"
+                     var="op"
+                     paginator="true"
+                     rows="5"
+                     scrollable="true"
+                     scrollWidth="100%">
+
+            <p:column headerText="ID" style="text-align:center;" width="25%">
+                <h:outputText value="#{op.id}"/>
+            </p:column>
+
+            <p:column headerText="Статус" style="text-align:center;" width="25%">
+                <h:outputText value="#{op.completed ? 'Завершена' : 'Ошибка'}"/>
+            </p:column>
+
+            <p:column headerText="Пользователь" style="text-align:center;" width="25%">
+                <h:outputText value="#{op.username}"/>
+            </p:column>
+
+            <p:column headerText="Число добавленных объектов" style="text-align:center;" width="25%">
+                <h:outputText value="#{op.count}"/>
+            </p:column>
+
+        </p:dataTable>
+    </h:form>
+</h:body>
+</html>

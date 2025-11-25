@@ -31,6 +31,10 @@
                         outcome="/uploadFile"
                         styleClass="#{navigationBean.currentPage eq 'uploadFile' ? 'active-menu' : ''}"
                         ajax="false"/>
+            <p:menuitem value="История" icon="pi pi-history"
+                        outcome="/history"
+                        styleClass="#{navigationBean.currentPage eq 'history' ? 'active-menu' : ''}"
+                        ajax="false"/>
         </p:menubar>
     </h:form>
 </ui:composition>

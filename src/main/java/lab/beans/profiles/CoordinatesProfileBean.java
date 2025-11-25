@@ -42,7 +42,7 @@ public class CoordinatesProfileBean implements Updatable {
 
     @Override
     public void updateTable() {
-        coordinates = databaseManager.getCoordinatesById(id);
+        coordinates = databaseManager.getObjectById(Coordinates.class, id);
     }
 
     public int getId() {

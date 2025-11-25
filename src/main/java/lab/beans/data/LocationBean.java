@@ -43,7 +43,7 @@ public class LocationBean implements Updatable {
     }
 
     public void updateTable() {
-        locationList = databaseManager.getLocationList();
+        locationList = databaseManager.getObjectList(Location.class);
         locationList = locationList.stream()
                 .sorted(Comparator.comparing(Location::getId))
                 .collect(Collectors.toList());
@@ -51,7 +51,7 @@ public class LocationBean implements Updatable {
 
     public List<Location> getLocationList() {
         if (locationList == null) {
-            locationList = databaseManager.getLocationList();
+            locationList = databaseManager.getObjectList(Location.class);
         }
         return locationList;
     }

@@ -7,6 +7,7 @@ import lab.beans.data.CoordinatesBean;
 import lab.beans.data.LocationBean;
 import lab.beans.data.MovieBean;
 import lab.beans.data.PersonBean;
+import lab.beans.data.util.OperationBean;
 import lab.beans.profiles.CoordinatesProfileBean;
 import lab.beans.profiles.LocationProfileBean;
 import lab.beans.profiles.MovieProfileBean;
@@ -35,6 +36,7 @@ public class UpdateController {
     private LocationProfileBean locationProfileBean;
     private PersonProfileBean personProfileBean;
     private MovieProfileBean movieProfileBean;
+    private OperationBean operationBean;
 
     @PostConstruct
     public void init() {
@@ -61,6 +63,8 @@ public class UpdateController {
                 .evaluateExpressionGet(context, "#{personProfileBean}", PersonProfileBean.class);
         movieProfileBean = context.getApplication()
                 .evaluateExpressionGet(context, "#{movieProfileBean}", MovieProfileBean.class);
+        operationBean = context.getApplication()
+                .evaluateExpressionGet(context, "#{operationBean}", OperationBean.class);
     }
 
     public void checkAllUpdates() {
@@ -88,5 +92,9 @@ public class UpdateController {
 
     public void checkMovieProfileUpdates() {
         movieProfileBean.checkForUpdates();
+    }
+
+    public void checkHistoryUpdates() {
+        operationBean.checkForUpdates();
     }
 }

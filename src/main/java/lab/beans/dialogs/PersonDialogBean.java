@@ -1,6 +1,7 @@
 package lab.beans.dialogs;
 
 import lab.beans.util.UpdateBean;
+import lab.data.Location;
 import lab.data.Person;
 import lab.data.enums.Color;
 import lab.database.DatabaseManager;
@@ -37,19 +38,19 @@ public class PersonDialogBean {
     }
 
     public void openEditDialog(int id) {
-        person = databaseManager.getPersonById(id);
+        person = databaseManager.getObjectById(Person.class, id);
         selectedLocationId = person.getLocation() != null ? person.getLocation().getId() : null;
         editing = true;
     }
 
     public void addPerson() {
-        person.setLocation(databaseManager.getLocationById(selectedLocationId));
+        person.setLocation(databaseManager.getObjectById(Location.class, selectedLocationId));
         databaseManager.addObject(person);
         updateBean.increaseVersion();
     }
 
     public void updatePerson() {
-        person.setLocation(databaseManager.getLocationById(selectedLocationId));
+        person.setLocation(databaseManager.getObjectById(Location.class, selectedLocationId));
         databaseManager.updateObject(person);
         updateBean.increaseVersion();
     }

@@ -1,7 +1,9 @@
 package lab.beans.dialogs;
 
 import lab.beans.util.UpdateBean;
+import lab.data.Coordinates;
 import lab.data.Movie;
+import lab.data.Person;
 import lab.data.enums.MovieGenre;
 import lab.data.enums.MpaaRating;
 import lab.database.DatabaseManager;
@@ -42,7 +44,7 @@ public class MovieDialogBean {
     }
 
     public void openEditDialog(int id) {
-        movie = databaseManager.getMovieById(id);
+        movie = databaseManager.getObjectById(Movie.class, id);
         selectedCoordinatesId = movie.getCoordinates() != null ? movie.getCoordinates().getId() : null;
         selectedDirectorId = movie.getDirector() != null ? movie.getDirector().getId() : null;
         selectedScreenwriterId = movie.getScreenwriter() != null ? movie.getScreenwriter().getId() : null;
@@ -51,19 +53,19 @@ public class MovieDialogBean {
     }
 
     public void addMovie() {
-        movie.setDirector(databaseManager.getPersonById(selectedDirectorId));
-        movie.setScreenwriter(databaseManager.getPersonById(selectedScreenwriterId));
-        movie.setOperator(databaseManager.getPersonById(selectedOperatorId));
-        movie.setCoordinates(databaseManager.getCoordinatesById(selectedCoordinatesId));
+        movie.setDirector(databaseManager.getObjectById(Person.class, selectedDirectorId));
+        movie.setScreenwriter(databaseManager.getObjectById(Person.class, selectedScreenwriterId));
+        movie.setOperator(databaseManager.getObjectById(Person.class, selectedOperatorId));
+        movie.setCoordinates(databaseManager.getObjectById(Coordinates.class, selectedCoordinatesId));
         databaseManager.addObject(movie);
         updateBean.increaseVersion();
     }
 
     public void updateMovie() {
-        movie.setDirector(databaseManager.getPersonById(selectedDirectorId));
-        movie.setScreenwriter(databaseManager.getPersonById(selectedScreenwriterId));
-        movie.setOperator(databaseManager.getPersonById(selectedOperatorId));
-        movie.setCoordinates(databaseManager.getCoordinatesById(selectedCoordinatesId));
+        movie.setDirector(databaseManager.getObjectById(Person.class, selectedDirectorId));
+        movie.setScreenwriter(databaseManager.getObjectById(Person.class, selectedScreenwriterId));
+        movie.setOperator(databaseManager.getObjectById(Person.class, selectedOperatorId));
+        movie.setCoordinates(databaseManager.getObjectById(Coordinates.class, selectedCoordinatesId));
         databaseManager.updateObject(movie);
         updateBean.increaseVersion();
     }

@@ -33,7 +33,7 @@ public class LocationDialogBean {
     }
 
     public void openEditDialog(int id) {
-        location = databaseManager.getLocationById(id);
+        location = databaseManager.getObjectById(Location.class, id);
         editing = true;
     }
 

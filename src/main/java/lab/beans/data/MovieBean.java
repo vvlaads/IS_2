@@ -65,7 +65,7 @@ public class MovieBean implements Updatable {
     }
 
     private void applyFilters() {
-        List<Movie> allMovies = databaseManager.getMovieList();
+        List<Movie> allMovies = databaseManager.getObjectList(Movie.class);
 
         filteredMovieList = allMovies.stream()
                 .filter(m -> nameFilter == null || nameFilter.isEmpty() ||

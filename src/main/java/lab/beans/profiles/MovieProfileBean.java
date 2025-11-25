@@ -42,7 +42,7 @@ public class MovieProfileBean implements Updatable {
 
     @Override
     public void updateTable() {
-        movie = databaseManager.getMovieById(id);
+        movie = databaseManager.getObjectById(Movie.class, id);
     }
 
     public Movie getMovie() {

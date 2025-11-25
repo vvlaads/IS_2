@@ -33,7 +33,7 @@ public class CoordinatesDialogBean {
     }
 
     public void openEditDialog(int id) {
-        coordinates = databaseManager.getCoordinatesById(id);
+        coordinates = databaseManager.getObjectById(Coordinates.class, id);
         editing = true;
     }
 

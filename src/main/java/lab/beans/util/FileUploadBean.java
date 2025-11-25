@@ -1,8 +1,10 @@
 package lab.beans.util;
 
+import lab.data.util.Operation;
 import lab.database.DatabaseManager;
 import org.primefaces.model.file.UploadedFile;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -15,7 +17,16 @@ public class FileUploadBean {
     @EJB
     private DatabaseManager databaseManager;
 
+    private UpdateBean updateBean;
     private UploadedFile file;
+
+
+    @PostConstruct
+    public void init() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        updateBean = context.getApplication()
+                .evaluateExpressionGet(context, "#{updateBean}", UpdateBean.class);
+    }
 
     public void upload() {
         try {
@@ -31,13 +42,24 @@ public class FileUploadBean {
                 showError("Неверный тип файла");
                 return;
             }
+            String sessionId = FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .getSessionId(true);
+            Operation operation = new Operation();
+            operation.setUsername(sessionId);
 
-            boolean result = databaseManager.importObjects(fileContent);
-            if (result) {
-                showMessage("Успешно выполнено", "Все объекты были добавлены");
+            int result = databaseManager.importObjects(fileContent);
+            if (result > 0) {
+                showMessage("Успешно выполнено", "Добавлено " + result + " объектов");
+                operation.setCompleted(true);
+                operation.setCount(result);
             } else {
                 showError("Ошибка при добавлении объектов");
+                operation.setCompleted(false);
+                operation.setCount(0);
             }
+            databaseManager.addObject(operation);
+            updateBean.increaseVersion();
         } catch (Exception e) {
             showError("Внутренняя ошибка: " + e.getMessage());
         }

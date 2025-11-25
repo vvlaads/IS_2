@@ -42,7 +42,7 @@ public class LocationProfileBean implements Updatable {
 
     @Override
     public void updateTable() {
-        location = databaseManager.getLocationById(id);
+        location = databaseManager.getObjectById(Location.class, id);
     }
 
     public int getId() {

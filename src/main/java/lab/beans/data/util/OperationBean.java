@@ -1,9 +1,8 @@
-package lab.beans.data;
+package lab.beans.data.util;
 
 import lab.beans.util.Updatable;
 import lab.beans.util.UpdateBean;
-import lab.data.Coordinates;
-import lab.data.Movie;
+import lab.data.util.Operation;
 import lab.database.DatabaseManager;
 
 import javax.annotation.PostConstruct;
@@ -11,16 +10,14 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@ManagedBean(name = "coordinatesBean")
+@ManagedBean(name = "operationBean")
 @SessionScoped
-public class CoordinatesBean implements Updatable {
+public class OperationBean implements Updatable {
     @EJB
     private DatabaseManager databaseManager;
-    private List<Coordinates> coordinatesList;
+    private List<Operation> operationList;
 
     private UpdateBean updateBean;
     private long lastKnownVersion = -1;
@@ -35,6 +32,7 @@ public class CoordinatesBean implements Updatable {
         updateTable();
     }
 
+    @Override
     public void checkForUpdates() {
         long currentVersion = updateBean.getVersion();
         if (currentVersion != lastKnownVersion) {
@@ -43,17 +41,16 @@ public class CoordinatesBean implements Updatable {
         }
     }
 
+    @Override
     public void updateTable() {
-        coordinatesList = databaseManager.getObjectList(Coordinates.class);
-        coordinatesList = coordinatesList.stream()
-                .sorted(Comparator.comparing(Coordinates::getId))
-                .collect(Collectors.toList());
+        operationList = databaseManager.getObjectList(Operation.class);
+        System.out.println("New Operation list: " + operationList.size() + "\n\n\n");
     }
 
-    public List<Coordinates> getCoordinatesList() {
-        if (coordinatesList == null) {
-            coordinatesList = databaseManager.getObjectList(Coordinates.class);
+    public List<Operation> getOperationList() {
+        if (operationList == null) {
+            operationList = databaseManager.getObjectList(Operation.class);
         }
-        return coordinatesList;
+        return operationList;
     }
 }
