@@ -1,6 +1,5 @@
 package lab.database;
 
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,8 +15,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.validation.ValidationException;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -30,7 +27,7 @@ public class DatabaseManager {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         try {
-            if (Validator.validateObject(object)) {
+            if (Validator.isValidObject(object)) {
                 em.persist(object);
             } else {
                 throw new IllegalArgumentException(object.getClass() + " validation failed");
@@ -38,7 +35,7 @@ public class DatabaseManager {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
@@ -46,7 +43,7 @@ public class DatabaseManager {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         try {
-            if (Validator.validateObject(object)) {
+            if (Validator.isValidObject(object)) {
                 if (em.find(object.getClass(), object.getId()) == null) {
                     throw new RuntimeException(object.getClass() + " doesn't exist");
                 }
@@ -57,7 +54,7 @@ public class DatabaseManager {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
@@ -73,7 +70,7 @@ public class DatabaseManager {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
@@ -91,7 +88,7 @@ public class DatabaseManager {
             return obj;
         } catch (Exception e) {
             System.err.println("Error while fetching " + clazz.getSimpleName() + " by id: " + id);
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             return null;
         }
     }
@@ -102,7 +99,7 @@ public class DatabaseManager {
                     .setParameter(1, count)
                     .getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             return -1;
         }
     }
@@ -114,7 +111,7 @@ public class DatabaseManager {
                     .setParameter(1, prefix)
                     .getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -126,7 +123,7 @@ public class DatabaseManager {
                     .setParameter(1, minCount)
                     .getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -143,7 +140,6 @@ public class DatabaseManager {
 
         } catch (Exception e) {
             System.err.println("Ошибка при поиске операторов без оскаров: " + e.getMessage());
-            e.printStackTrace();
             return Collections.emptyList();
         }
     }
@@ -163,7 +159,7 @@ public class DatabaseManager {
                 transaction.rollback();
             }
             System.err.println("Ошибка при награждении фильмов: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
@@ -208,16 +204,15 @@ public class DatabaseManager {
 
             int totalCount = 0;
             for (DBObject obj : objects) {
-                if (!Validator.validateObject(obj)) {
+                if (!Validator.isValidObject(obj)) {
                     throw new ValidationException("Ошибка валидации");
                 }
-                totalCount += countAllObjects(obj);
+                totalCount += countAllIncludesObjects(obj);
             }
 
             for (DBObject obj : objects) {
                 em.persist(obj);
             }
-            System.out.println("COUNT: " + totalCount + "\n\n\n");
             transaction.commit();
             return totalCount;
         } catch (Exception e) {
@@ -228,67 +223,28 @@ public class DatabaseManager {
     }
 
 
-    private int countAllObjects(Object root) {
-        // используем identity set, чтобы корректно обрабатывать циклы
-        Set<Object> visited = Collections.newSetFromMap(new IdentityHashMap<>());
-        return countRecursive(root, visited);
-    }
-
-    private int countRecursive(Object current, Set<Object> visited) {
-        if (current == null) return 0;
-        if (visited.contains(current)) return 0;
-        visited.add(current);
-
+    private int countAllIncludesObjects(DBObject mainObject) {
         int count = 0;
-        // Если это DBObject — считаем +1
-        if (current instanceof DBObject) {
-            count = 1;
+
+        if (mainObject == null) {
+            return 0;
         }
 
-        Class<?> cls = current.getClass();
+        count++;
 
-        // Если это коллекция — пройтись по элементам
-        if (current instanceof Iterable) {
-            for (Object el : (Iterable<?>) current) {
-                count += countRecursive(el, visited);
-            }
-            return count;
-        }
+        for (Field field : mainObject.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(mainObject);
 
-        // Если это массив
-        if (cls.isArray()) {
-            int len = Array.getLength(current);
-            for (int i = 0; i < len; i++) {
-                Object el = Array.get(current, i);
-                count += countRecursive(el, visited);
-            }
-            return count;
-        }
-
-        // Иначе — смотреть поля (private тоже)
-        while (cls != null && cls != Object.class) {
-            for (Field f : cls.getDeclaredFields()) {
-                f.setAccessible(true);
-                try {
-                    Object val = f.get(current);
-                    if (val == null) continue;
-
-                    // Если поле само DBObject или коллекция/массив — рекурсивно
-                    if (val instanceof DBObject || val instanceof Iterable || val.getClass().isArray()) {
-                        count += countRecursive(val, visited);
-                    } else {
-                        // Можно также рекурсивно спускаться в объекты других типов,
-                        // если есть шанс что внутри них лежат DBObject
-                        // (опционально, по необходимости)
-                    }
-                } catch (IllegalAccessException e) {
-                    // игнорируем/логируем
+                if (value instanceof DBObject) {
+                    DBObject dbObject = (DBObject) value;
+                    count += countAllIncludesObjects(dbObject);
                 }
+            } catch (IllegalAccessException e) {
+                System.err.println(e.getMessage());
             }
-            cls = cls.getSuperclass();
         }
-
         return count;
     }
-
 }

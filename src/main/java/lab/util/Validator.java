@@ -1,12 +1,13 @@
 package lab.util;
 
+import lab.data.Movie;
 import lab.util.annotations.*;
 
 import java.lang.reflect.Field;
 
 public class Validator {
 
-    public static boolean validateObject(Object obj) {
+    public static boolean isValidObject(Object obj) {
         if (obj == null) return false;
 
         Field[] fields = obj.getClass().getDeclaredFields();
@@ -68,6 +69,16 @@ public class Validator {
                 return false;
             }
         }
+
+        if (obj.getClass() == Movie.class) {
+            Movie movie = (Movie) obj;
+            return isValidMovie(movie);
+        }
+
         return true;
+    }
+
+    private static boolean isValidMovie(Movie movie) {
+        return movie.getTotalBoxOffice() >= movie.getUsaBoxOffice();
     }
 }
