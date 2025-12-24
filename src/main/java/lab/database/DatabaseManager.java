@@ -27,11 +27,12 @@ public class DatabaseManager {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         try {
-            if (Validator.isValidObject(object)) {
-                em.persist(object);
-            } else {
+            if (!Validator.isValidObject(object)) {
                 throw new IllegalArgumentException(object.getClass() + " validation failed");
             }
+
+            em.persist(object);
+
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -64,7 +65,7 @@ public class DatabaseManager {
         try {
             DBObject existObject = em.find(entityClass, id);
             if (existObject == null) {
-                throw new RuntimeException(entityClass + " doesn't exist");
+                throw new RuntimeException(entityClass + " with id: " + id + " doesn't exist");
             }
             em.remove(existObject);
             transaction.commit();
