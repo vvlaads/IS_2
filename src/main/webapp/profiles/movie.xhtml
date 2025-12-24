@@ -30,12 +30,12 @@
             <p class="object-id">ID: #{movieProfileBean.movie.id}</p>
             <div class="actions">
                 <p:commandButton styleClass="action-button" value="Редактировать" icon="pi pi-pencil"
-                                 actionListener="#{movieDialogBean.openEditDialog(m.id)}"
+                                 actionListener="#{movieDialogBean.openEditDialog(movieProfileBean.id)}"
                                  oncomplete="PF('movieDialog').show();"
                                  update=":movieDialogForm"/>
 
                 <p:commandButton styleClass="action-button delete-button" value="Удалить" icon="pi pi-trash"
-                                 action="#{movieBean.deleteMovie(m.id)}"
+                                 action="#{movieBean.deleteMovie(movieProfileBean.id)}"
                                  update=":movieProfileForm"
                                  process="@this"
                                  onclick="if(!confirm('Вы уверены, что хотите удалить фильм \\'#{m.name}\\'?')) return false;"/>
