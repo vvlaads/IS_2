@@ -8,6 +8,7 @@
 <h:head>
     <title>История операций</title>
     <h:outputStylesheet name="styles.css"/>
+    <h:outputStylesheet name="history.css"/>
 </h:head>
 
 <h:body>
@@ -23,7 +24,7 @@
 
     <ui:include src="/templates/topMenu.xhtml"/>
 
-    <h2>История операций:</h2>
+    <h2 class="header">История операций:</h2>
 
     <h:form id="historyForm" style="width: 90%; margin: 0 auto; display: block;">
         <p:dataTable id="historyTable"
